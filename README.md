@@ -28,7 +28,7 @@ A fast **ncurses** interface for managing packages using your system's native pa
 
 **Gcano** is a lightweight terminal package helper written entirely in **C**.
 
-Instead of using the bare bones terminal, Gcano provides an intuitive **ncurses-based interface** for browsing, searching, and installing packages while automatically using the package manager available on your system.
+Instead of using the bare bones terminal, Gcano provides an intuitive **ncurses-based interface** for browsing, searching, and installing packages while automatically using the package manager available on your system. Kinda like aptitude, but for everything.
 
 Supported backends include:
 
@@ -45,7 +45,7 @@ Supported backends include:
 -  Search packages easily
 -  Install packages from one interface
 -  Automatically detects your package manager
--  Optional Lua plugin support
+-  Optional Lua plugin support(SOON!)
 -  Works across multiple Linux distributions
 -  Written in pure C
 
@@ -116,38 +116,14 @@ gcc -std=c99 src/*.c -o gcano -lncurses -llua
 
 # 💻 Usage
 ---
-If you want the TUI:
----
-Launch the inteface:
 
-```bash
-gcano tui
 ```
-
----
-If you wanna go the CLI way:
----
-Install a package:
-
-```bash
-gcano install nginx
-```
-
-Search packages:
-
-```bash
-gcano search firefox
-```
-
-Update repositories:
-
-```bash
-gcano update
+user@computer[~}$: gcano
 ```
 
 ---
 
-# ⚙️ Configuration
+# ⚙️ Configuration (In development)
 
 Configuration files are stored inside:
 
@@ -155,7 +131,7 @@ Configuration files are stored inside:
 ~/.config/gcano/
 ```
 
-Lua plugins can be added to customize menus and extend functionality.
+Lua plugins will soon be possible to be added as to customize menus and extend functionality.
 
 ---
 
