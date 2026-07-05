@@ -74,7 +74,7 @@ Supported backends include:
 
 
 ## Install dependencies:
-Debian:
+Debian/Ubuntu:
 ```
 sudo apt update
 sudo apt install gcc make libncurses5-dev libncursesw5-dev 
