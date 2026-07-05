@@ -9,7 +9,7 @@ A fast **ncurses** interface for managing packages using your system's native pa
 ![License](https://img.shields.io/github/license/guisodre12/gcano)
 ![Language](https://img.shields.io/badge/language-C-blue?logo=c)
 ![Platform](https://img.shields.io/badge/platform-Linux-success)
-![Status](https://img.shields.io/badge/status-Beta-orange)
+![Status](https://img.shields.io/badge/status-Alpha-orange)
 
 ---
 
