@@ -28,5 +28,7 @@ int search_packages(PackageManager pm,
 void fetch_package_info(PackageManager pm,
                         const char *pkg,
                         Package *out);
+                        
+int run_install(PackageManager pm, const char *pkg);
 
 #endif
