@@ -11,20 +11,22 @@ PREFIX ?= /usr/local
 all: $(OUT)
 
 $(OUT): $(OBJ)
-	$(CC) $(OBJ) -o $(OUT) $(LDFLAGS)
+	@$(CC) $(OBJ) -o $(OUT) $(LDFLAGS)
 
 src/%.o: src/%.c
-	$(CC) $(CFLAGS) -c $< -o $@
+	@$(CC) $(CFLAGS) -c $< -o $@
 
 install: $(OUT)
-	@echo "Installing gcano to $(PREFIX)/bin"
-	install -Dm755 $(OUT) $(PREFIX)/bin/gcano
+	@echo "Installing gcano..."
+	@install -Dm755 $(OUT) $(PREFIX)/bin/gcano
+	@echo "Done."
 
 uninstall:
-	@echo "Removing gcano from $(PREFIX)/bin"
-	rm -f $(PREFIX)/bin/gcano
+	@echo "Removing gcano..."
+	@rm -f $(PREFIX)/bin/gcano
+	@echo "Done."
 
 clean:
-	rm -f src/*.o $(OUT)
+	@rm -f src/*.o $(OUT)
 
 .PHONY: all clean install uninstall
