@@ -53,20 +53,11 @@ Supported backends include:
 
 ## 📸 Preview
 
-```text
-┌──────────────────────────────────────────┐
-│               GCANO                      │
-├──────────────────────────────────────────┤
-│ > Install Package                        │
-│   Remove Package                         │
-│   Search Repository                      │
-│   Update System                          │
-│   Configuration                          │
-│   Exit                                   │
-└──────────────────────────────────────────┘
-```
 
-*(Replace with a real screenshot later.)*
+<img width="1366" height="742" alt="Screenshot From 2026-07-04 23-39-08" src="https://github.com/user-attachments/assets/9fc8707d-1dfb-4251-82cc-9a30bfaccfc2" />
+<img width="1366" height="742" alt="Screenshot From 2026-07-04 23-39-30" src="https://github.com/user-attachments/assets/d3d777b6-87cb-4d03-a669-40240a4389a2" />
+
+
 
 ---
 
