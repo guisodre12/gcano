@@ -63,6 +63,21 @@ Supported backends include:
 
 # 📥 Installation
 
+## Install dependencies:
+Debian:
+```
+sudo apt install libncurses5-dev libncursesw5-dev
+```
+
+Arch Linux:
+```
+sudo pacman -S ncurses
+```
+
+Fedora:
+```
+sudo dnf install ncurses-devel
+```
 ## Build from source
 
 ```bash
@@ -74,7 +89,7 @@ sudo make install
 
 ---
 
-## Download latest release
+## or download latest release
 
 ```bash
 curl -L \
