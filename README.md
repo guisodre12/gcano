@@ -100,18 +100,6 @@ sudo make install
 
 ---
 
-## or download latest release
-
-```bash
-curl -L \
-https://github.com/guisodre12/gcano/releases/latest/download/gcano.tar.gz \
-| tar -xz
-
-sudo install gcano /usr/local/bin/
-```
-
----
-
 # 💻 Usage
 ---
 
