@@ -1,29 +1,54 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
+#include "search.h"
 
-#include "install.h"
+/* check if command exists */
+static int exists(const char *cmd)
+{
+    char buf[128];
+    snprintf(buf, sizeof(buf), "command -v %s >/dev/null 2>&1", cmd);
+    return system(buf) == 0;
+}
 
-void install_package(const char *pkg) {
+/* run install safely */
+int run_install(PackageManager pm, const char *pkg)
+{
     char cmd[512];
 
-    if (system("which pacman > /dev/null 2>&1") == 0) {
-        printf("[INFO]:Package manager detected, using pacman\n");
-        snprintf(cmd, sizeof(cmd), "sudo pacman -S %s", pkg);
+    const char *prefix = "";
 
-    } else if (system("which apt > /dev/null 2>&1") == 0) {
-        printf("[INFO]:Package manager detected, using apt\n");
-        snprintf(cmd, sizeof(cmd), "sudo apt install -y %s", pkg);
+    /* privilege resolver */
+    if (exists("pkexec"))
+        prefix = "pkexec";
+    else if (exists("sudo"))
+        prefix = "sudo";
+    else if (exists("doas"))
+        prefix = "doas";
 
-    } else if (system("which dnf > /dev/null 2>&1") == 0) {
-        printf("[INFO]:Package manager detected, using dnf\n");
-        snprintf(cmd, sizeof(cmd), "sudo dnf install -y %s", pkg);
-
-    } else {
-        printf("[ERROR]:No supported package manager found. HAULTING...\n");
-        return;
+    if (strcmp(pm.name, "pacman") == 0)
+    {
+        snprintf(cmd, sizeof(cmd),
+                 "%s pacman -S --noconfirm %s",
+                 prefix, pkg);
+    }
+    else if (strcmp(pm.name, "apt") == 0)
+    {
+        snprintf(cmd, sizeof(cmd),
+                 "%s apt install -y %s",
+                 prefix, pkg);
+    }
+    else if (strcmp(pm.name, "dnf") == 0)
+    {
+        snprintf(cmd, sizeof(cmd),
+                 "%s dnf install -y %s",
+                 prefix, pkg);
+    }
+    else
+    {
+        return -1;
     }
 
-    printf("[INFO]:Running: %s\n", cmd);
-    system(cmd);
+    return system(cmd);
 }
