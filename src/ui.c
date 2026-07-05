@@ -17,7 +17,8 @@ static void print_wrapped(int y, int x, const char *text, int width)
         {
             line++;
             col = 0;
-            if (text[i] == '\n') continue;
+            if (text[i] == '\n')
+                continue;
         }
 
         mvaddch(y + line, x + col, text[i]);
@@ -62,10 +63,14 @@ void show_details(Package p, PackageManager pm)
         if (ch == 'i' || ch == 'I')
         {
             endwin();
-            char cmd[256];
-            snprintf(cmd, sizeof(cmd), "%s %s", pm.install_cmd, p.name);
-            system(cmd);
+
+            run_install(pm, p.name);
+            
             initscr();
+            curs_set(0);
+            noecho();
+            cbreak();
+            keypad(stdscr, TRUE);
         }
     }
 }
@@ -94,13 +99,15 @@ void show_results(Package packages[], int n, PackageManager pm)
         {
             int idx = i + offset;
 
-            if (idx == highlight) attron(A_REVERSE);
+            if (idx == highlight)
+                attron(A_REVERSE);
 
             mvprintw(4 + i, 2, "%-30s | %s",
                      packages[idx].name,
-                     packages[idx].description);
+                     packages[idx].description ? packages[idx].description : "");
 
-            if (idx == highlight) attroff(A_REVERSE);
+            if (idx == highlight)
+                attroff(A_REVERSE);
         }
 
         mvhline(rows - 2, 2, '-', cols - 4);
@@ -131,6 +138,63 @@ void show_results(Package packages[], int n, PackageManager pm)
     }
 }
 
+/* ---------------- no results ---------------- */
+
+static void show_no_results(const char *query, PackageManager pm)
+{
+    int rows, cols;
+    getmaxyx(stdscr, rows, cols);
+
+    clear();
+
+    const char *title2[] = {
+"  ____________...----..____..-'``-..___",
+"    ,'.                                  ```--.._",
+"   :                                             ``._",
+"   |                           --                    ``.",
+"   |                   -.-      -.     -   -.        `.",
+"   :                     __           --            .     \\",
+"    `._____________     (  `.   -.-      --  -   .   `     \\",
+"       `-----------------\\   \\_.--------..__..--.._ `. `.   :",
+" Nothing around here...   `--'                     `-._ .   |",
+"                                                       `.`  |",
+"                                                         \\` |",
+"                                                          \\ |",
+"                                                          / \\`.",
+"                                                         /  _\\-'",
+"                                                        /_,'"
+};
+
+int tsize2 = sizeof(title2) / sizeof(title2[0]);
+int start_y2 = 1;
+
+for (int i = 0; i < tsize2; i++)
+{
+    mvprintw(start_y2 + i,
+             (cols - (int)strlen(title2[i])) / 2,
+             "%s",
+             title2[i]);
+}
+    for (int i = 0; i < cols - 4; i++)
+            mvaddch(rows / 2 - 3, 2 + i, '-');
+    mvprintw(rows / 2 - 1, (cols - 10) / 2, "Woops! No results found for query %s!", query);
+
+
+    mvprintw(rows / 2, (cols - 10) / 2, "Press [Enter] to continue");
+    mvprintw(rows - 2, 2,
+             "Backend detected: %s | Gcano Alpha v1.0.0",
+             pm.name);
+
+    refresh();
+
+    while (1)
+    {
+        int ch = getch();
+        if (ch == '\n' || ch == 'b' || ch == 'B')
+            break;
+    }
+}
+
 /* ---------------- main UI ---------------- */
 
 void start_ui()
@@ -146,8 +210,7 @@ void start_ui()
     int highlight = 0;
     int ch;
 
-    char input_buf[80];
-    memset(input_buf, 0, sizeof(input_buf));
+    char input_buf[80] = "";
 
     while (1)
     {
@@ -166,7 +229,7 @@ void start_ui()
 "  \\ \\  \\|\\  \\ \\  \\____\\ \\  \\ \\  \\ \\  \\\\ \\  \\ \\  \\\\\\  \\        ",
 "   \\ \\_______\\ \\_______\\ \\__\\ \\__\\ \\__\\\\ \\__\\ \\_______\\       ",
 "    \\|_______|\\|_______|\\|__|\\|__|\\|__| \\|__|\\|_______|       ",
-"        G C A N O  -  a i n t  n o t  a n  o r g a n i z e r"
+"        Gcano ain't not an organizer! -- v1.0.0 Alpha"
         };
 
         int tsize = 8;
@@ -188,12 +251,17 @@ void start_ui()
         int box_x = (cols - box_w) / 2;
         int box_y = banner_end + 2;
 
-        mvprintw(box_y - 1, box_x, "+----------------------------------------------------------+");
-        mvprintw(box_y,     box_x, "|                                                          |");
-        mvprintw(box_y + 1, box_x, "+----------------------------------------------------------+");
+        mvaddch(box_y - 1, box_x, '+');
+        mvhline(box_y - 1, box_x + 1, '-', box_w - 2);
+        mvaddch(box_y - 1, box_x + box_w - 1, '+');
 
-        move(box_y, box_x + 2);
-        clrtoeol();
+        mvaddch(box_y, box_x, '|');
+        mvhline(box_y, box_x + 1, ' ', box_w - 2);
+        mvaddch(box_y, box_x + box_w - 1, '|');
+
+        mvaddch(box_y + 1, box_x, '+');
+        mvhline(box_y + 1, box_x + 1, '-', box_w - 2);
+        mvaddch(box_y + 1, box_x + box_w - 1, '+');
 
         if (highlight == 0)
             attron(A_REVERSE);
@@ -211,12 +279,19 @@ void start_ui()
         if (highlight == 1)
             attron(A_REVERSE);
 
-        mvprintw(rows - 2, 2, "Exit");
+        mvprintw(rows - 3, 2, "Exit");
 
         if (highlight == 1)
             attroff(A_REVERSE);
 
-        mvprintw(rows - 1, 2, "Backend: %s", pm.name);
+        /* ---------------- FOOTER ---------------- */
+
+        for (int i = 0; i < cols - 4; i++)
+            mvaddch(rows - 2, 2 + i, '-');
+
+        mvprintw(rows - 1, 2,
+                 "Backend detected: %s | @GuiSodre12 2026",
+                 pm.name);
 
         refresh();
 
@@ -235,7 +310,14 @@ void start_ui()
                     echo();
 
                     memset(input_buf, 0, sizeof(input_buf));
-                    mvgetnstr(box_y, box_x + 2, input_buf, 80);
+
+                    mvhline(box_y, box_x + 1, ' ', box_w - 2);
+                    move(box_y, box_x + 2);
+
+                    mvgetnstr(box_y,
+                              box_x + 2,
+                              input_buf,
+                              sizeof(input_buf) - 1);
 
                     noecho();
 
@@ -244,6 +326,8 @@ void start_ui()
 
                     if (n > 0)
                         show_results(packages, n, pm);
+                    else
+                        show_no_results(input_buf, pm);
                 }
                 else
                 {
