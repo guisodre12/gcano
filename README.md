@@ -111,7 +111,7 @@ user@computer[~}$: gcano
 
 # ⚙️ Configuration (In development)
 
-Configuration files are stored inside:
+Configuration files are soon to be stored inside:
 
 ```
 ~/.config/gcano/
