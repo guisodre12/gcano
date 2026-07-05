@@ -63,20 +63,31 @@ Supported backends include:
 
 # 📥 Installation
 
+### Requirements
+
+| Dependency | Version |
+|------------|----------|
+| GCC | 7+ |
+| GNU Make | 4+ |
+| ncurses | 6+ |
+| Lua *(optional)* | 5.3+ |
+
+
 ## Install dependencies:
 Debian:
 ```
-sudo apt install libncurses5-dev libncursesw5-dev
+sudo apt update
+sudo apt install gcc make libncurses5-dev libncursesw5-dev 
 ```
 
 Arch Linux:
 ```
-sudo pacman -S ncurses
+sudo pacman -S gcc make ncurses
 ```
 
 Fedora:
 ```
-sudo dnf install ncurses-devel
+sudo dnf install gcc make ncurses-devel
 ```
 ## Build from source
 
@@ -97,25 +108,6 @@ https://github.com/guisodre12/gcano/releases/latest/download/gcano.tar.gz \
 | tar -xz
 
 sudo install gcano /usr/local/bin/
-```
-
----
-
-# 🔨 Building
-
-### Requirements
-
-| Dependency | Version |
-|------------|----------|
-| GCC | 7+ |
-| GNU Make | 4+ |
-| ncurses | 6+ |
-| Lua *(optional)* | 5.3+ |
-
-Manual build:
-
-```bash
-gcc -std=c99 src/*.c -o gcano -lncurses -llua
 ```
 
 ---
