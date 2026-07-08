@@ -65,8 +65,7 @@ void show_details(Package p, PackageManager pm)
             endwin();
 
             run_install(pm, p.name);
-            
-            initscr();
+        
             curs_set(0);
             noecho();
             cbreak();
